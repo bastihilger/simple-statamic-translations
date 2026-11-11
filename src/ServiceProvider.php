@@ -17,7 +17,6 @@ use Statamic\Events\GlobalVariablesBlueprintFound;
 use Statamic\Events\TermBlueprintFound;
 use Statamic\Providers\AddonServiceProvider;
 use Statamic\Statamic;
-use Statamic\Support\Blink;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -39,6 +38,11 @@ class ServiceProvider extends AddonServiceProvider
     protected $middlewareGroups = [
         'statamic.web' => [
             Http\Middleware\DetectLanguage::class,
+            Http\Middleware\RedirectOtherLanguageUrls::class,
+        ],
+        // the site's and other addons' own frontend routes (`/{language}/search`)
+        'web' => [
+            Http\Middleware\DetectLanguageOnRoutes::class,
         ],
     ];
 
@@ -61,6 +65,9 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootAddon(): void
     {
+        // the language is static state: a new app (test, worker) starts in the default language
+        Translations::setCurrent(null);
+
         $this->publishes([
             __DIR__.'/../config/simple-statamic-translations.php' => config_path('simple-statamic-translations.php'),
         ], 'simple-statamic-translations-config');
@@ -70,8 +77,6 @@ class ServiceProvider extends AddonServiceProvider
 
         // after Statamic's own binding
         $this->app->bind(UrlBuilderContract::class, Routing\UrlBuilder::class);
-        $this->app->resolving(Blink::class, fn ($blink) => Routing\UriCache::install($blink));
-        Routing\UriCache::install($this->app->make(Blink::class));
 
         foreach ([EntryBlueprintFound::class, TermBlueprintFound::class, GlobalVariablesBlueprintFound::class] as $event) {
             Event::listen($event, AdjustBlueprint::class);

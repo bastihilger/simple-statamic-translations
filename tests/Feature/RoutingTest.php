@@ -44,21 +44,42 @@ class RoutingTest extends TestCase
             ->assertSee('title=News item|slug=news-item|subtitle=|headline=Headline|body=Deutscher Text|current=en', false)
             ->assertSee('links=de:/de/news/nachricht;en:/en/news/news-item*;', false);
 
-        // the app locale follows the language (__(), dates)
+        // the app locale follows the language (__(), dates), also after Statamic's Localize middleware
         $this->get('/de/news/nachricht')->assertSee('greeting=Hallo');
         $this->get('/en/news/news-item')->assertSee('greeting=Hello');
 
-        $this->get('/en/news/nachricht')->assertNotFound();
         $this->get('/fr/news/nachricht')->assertNotFound();
+        $this->get('/en/news/gibt-es-nicht')->assertNotFound();
     }
 
-    public function test_a_translated_title_gets_a_translated_slug(): void
+    public function test_a_slug_of_another_language_redirects_to_the_requested_language(): void
+    {
+        $this->news();
+
+        $this->get('/en/news/nachricht?x=1')->assertStatus(301)->assertRedirect('/en/news/news-item?x=1');
+        $this->get('/de/news/news-item')->assertStatus(301)->assertRedirect('/de/news/nachricht');
+
+        config(['simple-statamic-translations.redirect_other_languages' => false]);
+        $this->get('/en/news/nachricht')->assertNotFound();
+    }
+
+    public function test_a_new_entrys_translated_title_gets_a_translated_slug(): void
     {
         $entry = $this->news();
-        $entry->set('slug_translation', null)->set('title_translation', ['en' => 'Big News Today'])->save();
+        $new = Entry::make()->collection('news')->slug('grosse-neuigkeit')->data([
+            'title' => 'Große Neuigkeit',
+            'title_translation' => ['en' => 'Big News Today'],
+            'content' => ['de' => ['headline' => 'X']],
+        ]);
+        $new->save();
 
-        $this->assertSame(['en' => 'big-news-today'], Entry::find($entry->id())->get('slug_translation'));
+        $this->assertSame(['en' => 'big-news-today'], Entry::find($new->id())->get('slug_translation'));
         $this->get('/en/news/big-news-today')->assertOk()->assertSee('title=Big News Today', false);
+
+        // an existing entry keeps its URL when its title is translated later
+        $entry->set('slug_translation', null)->set('title_translation', ['en' => 'Renamed'])->save();
+        $this->assertNull(Entry::find($entry->id())->get('slug_translation'));
+        $this->get('/en/news/nachricht')->assertOk()->assertSee('title=Renamed', false);
     }
 
     public function test_structured_collections_use_the_translated_slug_too(): void

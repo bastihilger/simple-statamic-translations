@@ -40,4 +40,10 @@ return [
     */
     'fallback' => true,
 
+    /*
+    | A URL with another language's slug under a language's prefix (`/en/news/nachricht`) redirects
+    | (301) to the entry's URL in that language (`/en/news/news-item`).
+    */
+    'redirect_other_languages' => true,
+
 ];

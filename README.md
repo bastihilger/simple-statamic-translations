@@ -29,6 +29,7 @@ php artisan vendor:publish --tag=simple-statamic-translations-config   # optiona
 'detect_from_url' => true,      // first URL segment (/en/…) selects the language
 'app_locale' => true,           // app locale follows the language (or ['de' => 'de_DE', …])
 'fallback' => true,             // empty values show the default language's
+'redirect_other_languages' => true,  // /en/news/nachricht → 301 /en/news/news-item
 ```
 
 ## Translated fields
@@ -102,8 +103,9 @@ other languages go into **Translation** fields:
 ```
 
 A Translation field shows only while another language is selected. On the frontend `{{ title }}`
-and `{{ slug }}` return the current language's translation, falling back to the default. An empty
-slug translation is generated from the title translation on save.
+and `{{ slug }}` return the current language's translation, falling back to the default. When an
+entry is created, an empty slug translation is generated from the title translation (like
+Statamic's own slug); existing entries keep their URLs when a title is translated later.
 
 ## Routes
 
@@ -123,9 +125,12 @@ route: '/{language}/news/{slug}'
 php please translations:refresh-uris [collection …]
 ```
 
-For pages that aren't entries (`Route::statamic`, custom routes) the language comes from the
-URL's first segment (`detect_from_url`). Prefix those routes with the language yourself, e.g.
-`Route::statamic('{language}/search', 'search')`.
+For pages that aren't entries (`Route::statamic`, the site's and other addons' routes in the `web`
+group) the language comes from the URL's first segment (`detect_from_url`). Prefix those routes
+with the language yourself, e.g. `Route::statamic('de/suche', 'search')` and `'en/search'`.
+
+A URL with another language's slug under a language's prefix (`/en/news/nachricht`) redirects
+(301) to the entry's URL in that language (`redirect_other_languages`).
 
 ## Templates
 
@@ -148,6 +153,12 @@ In PHP: `Translations::current()`, `Translations::in('en', fn () => $entry->url(
 
 - Structured collections (pages trees): put `{language}` only at the start of the route; child
   URIs are built from their parents' URIs.
+- Another addon that rewrites blueprints in its own `EntryBlueprintFound` listener (adding
+  translated fields) runs after this addon's listener: call
+  `app(\Bastihilger\SimpleStatamicTranslations\Listeners\AdjustBlueprint::class)->handle($event)`
+  after the rewrite.
+- PHP that reads values raw (`$entry->get('description')`) gets every language
+  (`{de: {…}, en: {…}}`); augment them (`$entry->augmentedValue(…)`) to get the current one.
 - Asset and entry references inside translated fields aren't updated when the referenced item is
   renamed or moved (Statamic's reference updater doesn't know the language level yet).
 - No GraphQL types for translated fields yet.

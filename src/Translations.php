@@ -2,7 +2,9 @@
 
 namespace Bastihilger\SimpleStatamicTranslations;
 
+use Statamic\Contracts\Entries\EntryRepository;
 use Statamic\Facades\Blink;
+use Statamic\Facades\Stache;
 
 /**
  * The configured languages and the one the current request renders in.
@@ -78,6 +80,23 @@ class Translations
         }
     }
 
+    /**
+     * Flat-file sites: Statamic finds entries by URI through the Stache's URI index, which is
+     * built on demand and cached across requests. Built during another language's request it
+     * would hold that language's URIs, so it's loaded in the default language before a request
+     * switches to another one. (The eloquent driver stores the URI itself.)
+     */
+    public static function loadStacheUris(): void
+    {
+        if (! app(EntryRepository::class) instanceof \Statamic\Stache\Repositories\EntryRepository) {
+            return;
+        }
+
+        static::in(static::default(), fn () => Stache::store('entries')
+            ->discoverStores()
+            ->each(fn ($store) => $store->index('uri')->load()));
+    }
+
     public static function setCurrent(?string $language): void
     {
         $language = static::exists($language) ? $language : null;
@@ -88,7 +107,10 @@ class Translations
 
         static::$current = $language;
 
-        // URIs are cached per request (Routing\UriCache caches only the default language's)
+        // URIs are cached per request (Routing\UriCache caches only the default language's); the
+        // Blink instance isn't a singleton, so the caches go into the facade's current one
+        Routing\UriCache::install(Blink::getFacadeRoot());
+
         foreach (Routing\UriCache::STORES as $store) {
             Blink::store($store)->flush();
         }

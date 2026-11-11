@@ -16,7 +16,13 @@ class DetectLanguage
     {
         $segment = config('simple-statamic-translations.detect_from_url', true) ? $request->segment(1) : null;
 
-        Translations::activate(Translations::exists($segment) ? $segment : Translations::default());
+        $language = Translations::exists($segment) ? $segment : Translations::default();
+
+        if (! Translations::isDefault($language)) {
+            Translations::loadStacheUris();
+        }
+
+        Translations::activate($language);
 
         return $next($request);
     }

@@ -10,16 +10,23 @@ use Statamic\Events\CollectionTreeSaved;
 use Statamic\Events\EntryDeleted;
 use Statamic\Events\EntrySaved;
 use Statamic\Events\EntrySaving;
+use Statamic\Facades\Entry;
 
 /**
- * Keeps the translated URIs (Routing\TranslatedUris) up to date, and gives a translated title a
- * translated slug where the slug's translation is empty (like Statamic does for the slug).
+ * Keeps the translated URIs (Routing\TranslatedUris) up to date, and gives a new entry's
+ * translated title a translated slug where the slug's translation is empty (like Statamic does
+ * for the slug while an entry is created; existing URLs don't change when a title is translated).
  */
 class UpdateTranslatedUris
 {
     public function saving(EntrySaving $event): void
     {
         $entry = $event->entry;
+
+        if ($entry->id() && Entry::find($entry->id())) {
+            return;
+        }
+
         $fields = TranslatedFields::of($entry);
 
         if (! isset($fields['slug'], $fields['title'])) {
