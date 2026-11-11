@@ -88,8 +88,10 @@ class Translations
 
         static::$current = $language;
 
-        // entry URIs are cached per request (Routing\UriCache caches only the default language's)
-        Blink::store('entry-uris')->flush();
+        // URIs are cached per request (Routing\UriCache caches only the default language's)
+        foreach (Routing\UriCache::STORES as $store) {
+            Blink::store($store)->flush();
+        }
     }
 
     /**

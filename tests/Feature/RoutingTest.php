@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Tests\TestCase;
 
@@ -58,5 +59,24 @@ class RoutingTest extends TestCase
 
         $this->assertSame(['en' => 'big-news-today'], Entry::find($entry->id())->get('slug_translation'));
         $this->get('/en/news/big-news-today')->assertOk()->assertSee('title=Big News Today', false);
+    }
+
+    public function test_structured_collections_use_the_translated_slug_too(): void
+    {
+        $collection = Collection::make('docs')->routes('/{language}/docs/{slug}')->template('news')->layout('layout')
+            ->structureContents(['max_depth' => 1]);
+        $collection->save();
+
+        $entry = Entry::make()->collection('docs')->slug('anleitung')->data([
+            'title' => 'Anleitung',
+            'title_translation' => ['en' => 'Guide'],
+            'content' => ['de' => ['headline' => 'Los'], 'en' => ['headline' => 'Go']],
+        ]);
+        $entry->save();
+        $collection->structure()->in('default')->tree([['entry' => $entry->id()]])->save();
+
+        $this->assertSame('/de/docs/anleitung', Entry::find($entry->id())->url());
+        $this->assertSame('/en/docs/guide', Translations::in('en', fn () => Entry::find($entry->id())->url()));
+        $this->get('/en/docs/guide')->assertOk()->assertSee('title=Guide|slug=guide|headline=Go', false);
     }
 }

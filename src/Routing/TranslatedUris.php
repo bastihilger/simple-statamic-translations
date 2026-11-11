@@ -8,6 +8,7 @@ use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Contracts\Entries\Entry;
 use Statamic\Facades\Blink;
 use Statamic\Facades\Entry as Entries;
+use Statamic\Facades\Site;
 
 /**
  * The URIs of entries in the languages other than the default one (table `translated_uris`), so
@@ -59,7 +60,7 @@ class TranslatedUris
         }
 
         $count = 0;
-        $collection->queryEntries()->get()->each(function ($entry) use (&$count) {
+        $collection->queryEntries()->whereIn('site', Site::all()->keys()->all())->get()->each(function ($entry) use (&$count) {
             $count += static::write($entry);
         });
 

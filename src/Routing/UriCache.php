@@ -7,21 +7,25 @@ use Spatie\Blink\Blink;
 use Statamic\Support\Blink as StatamicBlink;
 
 /**
- * Statamic's per-request cache of entry URIs (`Blink::store('entry-uris')`). Flat-file sites
- * fill it with the stored URI – the default language's – whenever an entry is loaded, and
- * `$entry->uri()` / `url()` return what's in it. In another language it caches nothing, so every
- * URI is built for the current language.
+ * Statamic's per-request caches of URIs (`Blink::store('entry-uris')`, `'structure-uris'` for
+ * tree pages). Flat-file sites fill the entry cache with the stored URI – the default language's –
+ * whenever an entry is loaded, and `$entry->uri()` / `url()` return what's in them. In another
+ * language they cache nothing, so every URI is built for the current language.
  */
 class UriCache extends Blink
 {
-    /** Puts the cache in place of Statamic's `entry-uris` store (keeping what it holds). */
+    public const STORES = ['entry-uris', 'structure-uris'];
+
+    /** Puts the cache in place of Statamic's URI stores (keeping what they hold). */
     public static function install(StatamicBlink $blink): void
     {
         (function () {
-            $current = $this->stores['entry-uris'] ?? null;
+            foreach (UriCache::STORES as $name) {
+                $current = $this->stores[$name] ?? null;
 
-            if (! $current instanceof UriCache) {
-                $this->stores['entry-uris'] = new UriCache($current?->all() ?? []);
+                if (! $current instanceof UriCache) {
+                    $this->stores[$name] = new UriCache($current?->all() ?? []);
+                }
             }
         })->call($blink);
     }
