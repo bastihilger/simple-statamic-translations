@@ -1,10 +1,10 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Routing;
+namespace Bastihilger\SimpleStatamicTranslations\Routing;
 
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Contracts\Entries\Entry;
 use Statamic\Facades\Blink;
 use Statamic\Facades\Entry as Entries;

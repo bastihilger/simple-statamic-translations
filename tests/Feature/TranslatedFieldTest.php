@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Validation\ValidationException;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Facades\Blueprint;
 use Statamic\Facades\Entry;
 use Statamic\Fields\Field;
@@ -66,5 +66,24 @@ class TranslatedFieldTest extends TestCase
 
         $this->expectException(ValidationException::class);
         $fields->addValues(['title' => 'X', 'slug' => 'x', 'content' => ['de' => ['headline' => ''], 'en' => ['headline' => 'There']]])->validate();
+    }
+
+    public function test_a_single_field_with_the_wrappers_handle_is_a_translated_field(): void
+    {
+        $field = Blueprint::find('collections.news.news')->field('subtitle');
+
+        // a plain value from before the field was wrapped belongs to the default language
+        $this->assertSame(['de' => ['subtitle' => 'Alt']], $field->setValue('Alt')->process()->value());
+        $this->assertSame(['de' => ['subtitle' => 'Alt'], 'en' => ['subtitle' => null]], $field->setValue('Alt')->preProcess()->value());
+
+        $entry = $this->news();
+        $entry->set('subtitle', ['de' => ['subtitle' => 'Untertitel'], 'en' => ['subtitle' => 'Subtitle']])->save();
+
+        $this->assertSame('Untertitel', Entry::find($entry->id())->augmentedValue('subtitle')->value());
+        Translations::setCurrent('en');
+        $this->assertSame('Subtitle', Entry::find($entry->id())->augmentedValue('subtitle')->value());
+
+        $entry->set('subtitle', 'Nur Deutsch')->save();
+        $this->assertSame('Nur Deutsch', Entry::find($entry->id())->augmentedValue('subtitle')->value());   // fallback
     }
 }

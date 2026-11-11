@@ -15,7 +15,7 @@ publish states, use Statamic's multi-site instead.
 ## Installation
 
 ```bash
-composer require kraenkvisuell/simple-statamic-translations
+composer require bastihilger/simple-statamic-translations
 php artisan migrate        # the table of translated URIs
 php artisan vendor:publish --tag=simple-statamic-translations-config   # optional
 ```
@@ -63,12 +63,31 @@ language (`fallback`):
 {{ content }}{{ body }}{{ /content }}
 ```
 
+### A single field
+
+To translate one existing field, wrap it in a Translated field with the same handle. Templates
+keep using it as before (`{{ description }}` returns the current language's value), and values
+saved before it was wrapped count as the default language's:
+
+```yaml
+-
+  handle: description
+  field:
+    type: translated
+    hide_display: true
+    border: false
+    fields:
+      - { handle: description, field: { type: bard, display: Description } }
+```
+
+Stored as `description: { de: { description: [...] }, en: { description: [...] } }`.
+
 Only the default language is validated as `required`; the others may stay empty. Values saved
 before a field was wrapped count as the default language's, so existing fields can be wrapped
 without migrating data.
 
-In the CP every tab containing translated fields gets the language switch on top. The selected
-language applies to the whole CP (per browser tab) until it's switched again.
+In the CP every tab containing translated fields (the sidebar too) gets the language switch on
+top. The selected language applies to the whole CP (per browser tab) until it's switched again.
 
 ## Title and slug
 

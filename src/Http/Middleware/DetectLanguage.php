@@ -1,10 +1,10 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Http\Middleware;
+namespace Bastihilger\SimpleStatamicTranslations\Http\Middleware;
 
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Closure;
 use Illuminate\Http\Request;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 
 /**
  * Frontend requests: the language is the URL's first segment where it's a configured language

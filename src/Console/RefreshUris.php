@@ -1,9 +1,9 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Console;
+namespace Bastihilger\SimpleStatamicTranslations\Console;
 
+use Bastihilger\SimpleStatamicTranslations\Routing\TranslatedUris;
 use Illuminate\Console\Command;
-use Kraenkvisuell\SimpleStatamicTranslations\Routing\TranslatedUris;
 use Statamic\Console\RunsInPlease;
 use Statamic\Facades\Collection;
 

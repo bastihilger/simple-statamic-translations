@@ -17,6 +17,17 @@ tabs:
               field: title
               display: 'Title (translation)'
           -
+            handle: subtitle
+            field:
+              type: translated
+              hide_display: true
+              fields:
+                -
+                  handle: subtitle
+                  field:
+                    type: text
+                    display: Subtitle
+          -
             handle: content
             field:
               type: translated

@@ -1,10 +1,10 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations;
+namespace Bastihilger\SimpleStatamicTranslations;
 
+use Bastihilger\SimpleStatamicTranslations\Listeners\AdjustBlueprint;
+use Bastihilger\SimpleStatamicTranslations\Listeners\UpdateTranslatedUris;
 use Illuminate\Support\Facades\Event;
-use Kraenkvisuell\SimpleStatamicTranslations\Listeners\AdjustBlueprint;
-use Kraenkvisuell\SimpleStatamicTranslations\Listeners\UpdateTranslatedUris;
 use Statamic\Contracts\Data\DataRepository as DataRepositoryContract;
 use Statamic\Contracts\Routing\UrlBuilder as UrlBuilderContract;
 use Statamic\Data\DataRepository as StatamicDataRepository;

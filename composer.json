@@ -1,11 +1,12 @@
 {
-    "name": "kraenkvisuell/simple-statamic-translations",
+    "name": "bastihilger/simple-statamic-translations",
     "description": "Translate Statamic content without multi-site: a \"Translated\" field that wraps fields like a group and stores every language, one language switch per form, and {language} in routes.",
     "type": "statamic-addon",
+    "homepage": "https://github.com/bastihilger/simple-statamic-translations",
     "keywords": ["statamic", "translations", "i18n", "multilingual", "fieldtype"],
     "license": "MIT",
     "authors": [
-        { "name": "kraenkvisuell", "email": "hilger@kraenk.de" }
+        { "name": "Sebastian Hilger", "homepage": "https://github.com/bastihilger" }
     ],
     "require": {
         "php": "^8.3",
@@ -18,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kraenkvisuell\\SimpleStatamicTranslations\\": "src/"
+            "Bastihilger\\SimpleStatamicTranslations\\": "src/"
         }
     },
     "autoload-dev": {
@@ -33,7 +34,7 @@
         },
         "laravel": {
             "providers": [
-                "Kraenkvisuell\\SimpleStatamicTranslations\\ServiceProvider"
+                "Bastihilger\\SimpleStatamicTranslations\\ServiceProvider"
             ]
         }
     },

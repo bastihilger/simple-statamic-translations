@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Support\Facades\DB;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Tests\TestCase;
@@ -37,11 +37,11 @@ class RoutingTest extends TestCase
         $this->news();
 
         $this->get('/de/news/nachricht')->assertOk()
-            ->assertSee('title=Nachricht|slug=nachricht|headline=Überschrift|body=Deutscher Text|current=de', false)
+            ->assertSee('title=Nachricht|slug=nachricht|subtitle=|headline=Überschrift|body=Deutscher Text|current=de', false)
             ->assertSee('links=de:/de/news/nachricht*;en:/en/news/news-item;', false);
 
         $this->get('/en/news/news-item')->assertOk()
-            ->assertSee('title=News item|slug=news-item|headline=Headline|body=Deutscher Text|current=en', false)
+            ->assertSee('title=News item|slug=news-item|subtitle=|headline=Headline|body=Deutscher Text|current=en', false)
             ->assertSee('links=de:/de/news/nachricht;en:/en/news/news-item*;', false);
 
         // the app locale follows the language (__(), dates)
@@ -77,6 +77,6 @@ class RoutingTest extends TestCase
 
         $this->assertSame('/de/docs/anleitung', Entry::find($entry->id())->url());
         $this->assertSame('/en/docs/guide', Translations::in('en', fn () => Entry::find($entry->id())->url()));
-        $this->get('/en/docs/guide')->assertOk()->assertSee('title=Guide|slug=guide|headline=Go', false);
+        $this->get('/en/docs/guide')->assertOk()->assertSee('title=Guide|slug=guide|subtitle=|headline=Go', false);
     }
 }

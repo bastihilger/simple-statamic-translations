@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Statamic\Facades\Entry;
 use Statamic\Facades\GlobalSet;
 use Statamic\Facades\User;
@@ -67,7 +67,7 @@ class ControlPanelTest extends TestCase
         $this->assertFalse($entry->data()->has('translations_language_main'));
         $this->assertFalse($entry->data()->has('translations_language_sidebar'));
 
-        $this->get('/en/news/news-item-new')->assertOk()->assertSee('title=News item new|slug=news-item-new|headline=New headline', false);
+        $this->get('/en/news/news-item-new')->assertOk()->assertSee('title=News item new|slug=news-item-new|subtitle=|headline=New headline', false);
     }
 
     public function test_the_english_headline_is_optional(): void

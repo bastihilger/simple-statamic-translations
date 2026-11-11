@@ -1,12 +1,12 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes;
+namespace Bastihilger\SimpleStatamicTranslations\Fieldtypes;
 
 use Statamic\Fields\Fieldtype;
 
 /**
  * The language switch on top of every form tab with translated fields (added by
- * Listeners\AddLanguageSwitch, not selectable in blueprints). It only switches the form; it has
+ * Listeners\AdjustBlueprint, not selectable in blueprints). It only switches the form; it has
  * no value and is never saved (`visibility: computed`).
  */
 class LanguageSwitch extends Fieldtype

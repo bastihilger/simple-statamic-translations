@@ -1,9 +1,9 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Routing;
+namespace Bastihilger\SimpleStatamicTranslations\Routing;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes\Translation;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Bastihilger\SimpleStatamicTranslations\Fieldtypes\Translation;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 
 /**
  * Finds the Translation fields of an entry or term (`{type: translation, field: slug}`).

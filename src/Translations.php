@@ -1,6 +1,6 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations;
+namespace Bastihilger\SimpleStatamicTranslations;
 
 use Statamic\Facades\Blink;
 

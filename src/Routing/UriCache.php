@@ -1,8 +1,8 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Routing;
+namespace Bastihilger\SimpleStatamicTranslations\Routing;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Spatie\Blink\Blink;
 use Statamic\Support\Blink as StatamicBlink;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Routing;
+namespace Bastihilger\SimpleStatamicTranslations\Routing;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Statamic\Data\DataRepository as StatamicDataRepository;
 use Statamic\Facades\Site;
 use Statamic\Facades\URL;

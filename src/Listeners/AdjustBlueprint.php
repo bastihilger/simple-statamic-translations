@@ -1,18 +1,19 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Listeners;
+namespace Bastihilger\SimpleStatamicTranslations\Listeners;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes\LanguageSwitch;
-use Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes\Translated;
-use Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes\TranslatedValue;
-use Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes\Translation;
+use Bastihilger\SimpleStatamicTranslations\Fieldtypes\LanguageSwitch;
+use Bastihilger\SimpleStatamicTranslations\Fieldtypes\Translated;
+use Bastihilger\SimpleStatamicTranslations\Fieldtypes\TranslatedValue;
+use Bastihilger\SimpleStatamicTranslations\Fieldtypes\Translation;
 use Statamic\Fields\Blueprint;
 use Statamic\Statamic;
 
 /**
  * Blueprints of entries, terms and global variables:
  *
- * - in the CP, every tab with translated fields gets the language switch on top, and Translation
+ * - in the CP, every tab with translated fields (the sidebar too) gets the language switch on
+ *   top; Translation
  *   fields show only while another language than the default one is selected (they're always
  *   saved, also while hidden),
  * - outside the CP, fields with a Translation field (`title`, `slug`) return the current
@@ -34,26 +35,31 @@ class AdjustBlueprint
 
     protected function forForm(Blueprint $blueprint): void
     {
-        foreach ($blueprint->tabs() as $tab) {
-            $fields = $tab->fields()->all();
+        $translatedTabs = $blueprint->tabs()->filter(
+            fn ($tab) => $tab->fields()->all()->contains(fn ($field) => $this->isTranslated($field->config()))
+        );
 
-            if (! $fields->contains(fn ($field) => $this->isTranslated($field->config()))) {
-                continue;
-            }
+        if ($translatedTabs->isEmpty()) {
+            return;
+        }
 
-            $blueprint->ensureFieldInTab('translations_language_'.$tab->handle(), [
-                'type' => LanguageSwitch::handle(),
-                'visibility' => 'computed',
-                'hide_display' => true,
-                'listable' => false,
-            ], $tab->handle(), true);
-
-            $fields->filter(fn ($field) => $field->type() === Translation::handle())->each(function ($field) use ($blueprint) {
+        foreach ($translatedTabs as $tab) {
+            $tab->fields()->all()->filter(fn ($field) => $field->type() === Translation::handle())->each(function ($field) use ($blueprint) {
                 $blueprint->ensureFieldHasConfig($field->handle(), [
                     'if' => 'custom simpleTranslationsOtherLanguage',
                     'always_save' => true,
                 ]);
             });
+        }
+
+        // on top of every tab with translated fields (the sidebar too: narrow forms show it as a tab)
+        foreach ($translatedTabs->keys() as $tab) {
+            $blueprint->ensureFieldInTab('translations_language_'.$tab, [
+                'type' => LanguageSwitch::handle(),
+                'visibility' => 'computed',
+                'hide_display' => true,
+                'listable' => false,
+            ], $tab, true);
         }
     }
 

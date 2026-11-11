@@ -1,8 +1,8 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes;
+namespace Bastihilger\SimpleStatamicTranslations\Fieldtypes;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Statamic\Fields\Fieldtype;
 use Statamic\Fields\FieldtypeRepository;
 

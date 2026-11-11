@@ -1,11 +1,11 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Listeners;
+namespace Bastihilger\SimpleStatamicTranslations\Listeners;
 
+use Bastihilger\SimpleStatamicTranslations\Routing\TranslatedFields;
+use Bastihilger\SimpleStatamicTranslations\Routing\TranslatedUris;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Support\Str;
-use Kraenkvisuell\SimpleStatamicTranslations\Routing\TranslatedFields;
-use Kraenkvisuell\SimpleStatamicTranslations\Routing\TranslatedUris;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Events\CollectionTreeSaved;
 use Statamic\Events\EntryDeleted;
 use Statamic\Events\EntrySaved;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Fieldtypes;
+namespace Bastihilger\SimpleStatamicTranslations\Fieldtypes;
 
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Support\Str;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Fields\Fieldtype;
 
 /**

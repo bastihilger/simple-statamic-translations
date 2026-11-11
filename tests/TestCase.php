@@ -2,9 +2,9 @@
 
 namespace Tests;
 
+use Bastihilger\SimpleStatamicTranslations\ServiceProvider;
+use Bastihilger\SimpleStatamicTranslations\Translations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Kraenkvisuell\SimpleStatamicTranslations\ServiceProvider;
-use Kraenkvisuell\SimpleStatamicTranslations\Translations;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Testing\AddonTestCase;

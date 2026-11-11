@@ -1,8 +1,8 @@
 <?php
 
-namespace Kraenkvisuell\SimpleStatamicTranslations\Tags;
+namespace Bastihilger\SimpleStatamicTranslations\Tags;
 
-use Kraenkvisuell\SimpleStatamicTranslations\Translations as Languages;
+use Bastihilger\SimpleStatamicTranslations\Translations as Languages;
 use Statamic\Contracts\Entries\Entry;
 use Statamic\Facades\Entry as Entries;
 use Statamic\Facades\URL;
