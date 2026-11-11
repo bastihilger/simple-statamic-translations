@@ -1,0 +1,49 @@
+{
+    "name": "kraenkvisuell/simple-statamic-translations",
+    "description": "Translate Statamic content without multi-site: a \"Translated\" field that wraps fields like a group and stores every language, one language switch per form, and {language} in routes.",
+    "type": "statamic-addon",
+    "keywords": ["statamic", "translations", "i18n", "multilingual", "fieldtype"],
+    "license": "MIT",
+    "authors": [
+        { "name": "kraenkvisuell", "email": "hilger@kraenk.de" }
+    ],
+    "require": {
+        "php": "^8.3",
+        "statamic/cms": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "phpunit/phpunit": "^11.0 || ^12.0",
+        "laravel/pint": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kraenkvisuell\\SimpleStatamicTranslations\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Simple Statamic Translations",
+            "description": "Translated fields with one language switch per form, {language} in routes"
+        },
+        "laravel": {
+            "providers": [
+                "Kraenkvisuell\\SimpleStatamicTranslations\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfed/composer-plugin": false,
+            "php-http/discovery": true
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

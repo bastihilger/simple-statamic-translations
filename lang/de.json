@@ -1,0 +1,7 @@
+{
+    "Translated": "Übersetzt",
+    "Translation": "Übersetzung",
+    "Field": "Feld",
+    "The handle of the field this translates, e.g. `title` or `slug`.": "Der Handle des Felds, das übersetzt wird, z. B. `title` oder `slug`.",
+    "Language": "Sprache"
+}

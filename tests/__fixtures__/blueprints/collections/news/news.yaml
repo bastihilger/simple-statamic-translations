@@ -1,0 +1,57 @@
+title: News
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+          -
+            handle: title_translation
+            field:
+              type: translation
+              field: title
+              display: 'Title (translation)'
+          -
+            handle: content
+            field:
+              type: translated
+              display: Content
+              fields:
+                -
+                  handle: headline
+                  field:
+                    type: text
+                    required: true
+                -
+                  handle: body
+                  field:
+                    type: textarea
+                -
+                  handle: featured
+                  field:
+                    type: toggle
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              required: true
+          -
+            handle: slug_translation
+            field:
+              type: translation
+              field: slug
+              display: 'Slug (translation)'
+          -
+            handle: client
+            field:
+              type: text

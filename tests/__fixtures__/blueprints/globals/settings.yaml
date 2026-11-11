@@ -1,0 +1,14 @@
+tabs:
+  main:
+    sections:
+      -
+        fields:
+          -
+            handle: texts
+            field:
+              type: translated
+              fields:
+                -
+                  handle: footer
+                  field:
+                    type: text
