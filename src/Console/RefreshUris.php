@@ -13,7 +13,7 @@ class RefreshUris extends Command
 
     protected $signature = 'translations:refresh-uris {collection?* : Only these collections}';
 
-    protected $description = 'Rebuild the URIs of entries in the other languages (after changing a route or importing)';
+    protected $description = 'Rebuild the URIs of entries in the other languages (after changing a route or importing) and remove those of deleted entries';
 
     public function handle(): int
     {
@@ -24,6 +24,10 @@ class RefreshUris extends Command
         foreach ($collections as $collection) {
             $count = TranslatedUris::refreshCollection($collection);
             $this->line(sprintf('%-30s %d URIs', $collection->handle(), $count));
+        }
+
+        if ($pruned = TranslatedUris::prune()) {
+            $this->line("Removed $pruned URIs of deleted entries");
         }
 
         return self::SUCCESS;

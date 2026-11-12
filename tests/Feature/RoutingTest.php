@@ -33,6 +33,13 @@ class RoutingTest extends TestCase
 
         $entry->delete();
         $this->assertSame(0, DB::table('translated_uris')->count());
+
+        // deleted without an event (imports): the refresh command removes the rows
+        $other = $this->news();
+        $other->deleteQuietly();
+        $this->assertSame(1, DB::table('translated_uris')->count());
+        $this->artisan('translations:refresh-uris')->expectsOutputToContain('Removed 1 URIs of deleted entries')->assertSuccessful();
+        $this->assertSame(0, DB::table('translated_uris')->count());
     }
 
     public function test_each_language_renders_at_its_url(): void

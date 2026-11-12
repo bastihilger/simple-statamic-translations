@@ -67,6 +67,20 @@ class TranslatedUris
         return $count;
     }
 
+    /** Removes the rows of entries that no longer exist (deleted quietly, without an event). */
+    public static function prune(): int
+    {
+        if (! static::ready()) {
+            return 0;
+        }
+
+        $ids = DB::table(static::TABLE)->distinct()->pluck('entry_id')->all();
+        $existing = Entries::query()->whereIn('id', $ids)->get()->map->id()->all();
+        $gone = array_values(array_diff($ids, $existing));
+
+        return $gone ? DB::table(static::TABLE)->whereIn('entry_id', $gone)->delete() : 0;
+    }
+
     public static function forget(Entry $entry): void
     {
         static::ready() && DB::table(static::TABLE)->where('entry_id', $entry->id())->delete();
