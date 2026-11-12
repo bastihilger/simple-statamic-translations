@@ -105,6 +105,32 @@ class TranslatedUris
         return Blink::once('simple-statamic-translations-table', fn () => Schema::hasTable(static::TABLE));
     }
 
+    /**
+     * Absolute URLs of every published entry in the other languages (for `static:warm`, which
+     * only knows each entry's own URL).
+     *
+     * @return list<string>
+     */
+    public static function urls(): array
+    {
+        if (! static::ready()) {
+            return [];
+        }
+
+        $rows = DB::table(static::TABLE)->get();
+        $entries = Entries::query()->whereIn('id', $rows->pluck('entry_id')->unique()->values()->all())->get()->keyBy->id();
+
+        return $rows
+            ->filter(function ($row) use ($entries) {
+                $entry = $entries[$row->entry_id] ?? null;
+
+                return $entry && $entry->published() && ! $entry->private() && ! $entry->isRedirect();
+            })
+            ->map(fn ($row) => rtrim(Site::get($row->site)?->absoluteUrl() ?? url('/'), '/').$row->uri)
+            ->values()
+            ->all();
+    }
+
     public static function entry(object $row): ?Entry
     {
         return Entries::find($row->entry_id);

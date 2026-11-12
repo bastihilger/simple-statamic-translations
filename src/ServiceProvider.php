@@ -5,6 +5,7 @@ namespace Bastihilger\SimpleStatamicTranslations;
 use Bastihilger\SimpleStatamicTranslations\Listeners\AdjustBlueprint;
 use Bastihilger\SimpleStatamicTranslations\Listeners\UpdateTranslatedUris;
 use Illuminate\Support\Facades\Event;
+use Statamic\Console\Commands\StaticWarm;
 use Statamic\Contracts\Data\DataRepository as DataRepositoryContract;
 use Statamic\Contracts\Routing\UrlBuilder as UrlBuilderContract;
 use Statamic\Data\DataRepository as StatamicDataRepository;
@@ -86,6 +87,11 @@ class ServiceProvider extends AddonServiceProvider
         Event::listen(EntrySaved::class, [UpdateTranslatedUris::class, 'saved']);
         Event::listen(EntryDeleted::class, [UpdateTranslatedUris::class, 'deleted']);
         Event::listen(CollectionTreeSaved::class, [UpdateTranslatedUris::class, 'treeSaved']);
+
+        // static:warm knows each entry's own URL only: add the other languages'
+        StaticWarm::hook('additional', function ($uris, $next) {
+            return $next($uris->merge(Routing\TranslatedUris::urls()));
+        });
 
         Statamic::provideToScript([
             'simpleStatamicTranslations' => [

@@ -129,6 +129,9 @@ For pages that aren't entries (`Route::statamic`, the site's and other addons' r
 group) the language comes from the URL's first segment (`detect_from_url`). Prefix those routes
 with the language yourself, e.g. `Route::statamic('de/suche', 'search')` and `'en/search'`.
 
+Static caching: `php please static:warm` gets the entries' URLs in the other languages too (it
+only knows each entry's own URL), and every language's page is cached under its own URL.
+
 A URL with another language's slug under a language's prefix (`/en/news/nachricht`) redirects
 (301) to the entry's URL in that language (`redirect_other_languages`).
 

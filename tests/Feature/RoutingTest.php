@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use Bastihilger\SimpleStatamicTranslations\Routing\TranslatedUris;
 use Bastihilger\SimpleStatamicTranslations\Translations;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
+use Statamic\Console\Commands\StaticWarm;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Tests\TestCase;
@@ -99,5 +102,19 @@ class RoutingTest extends TestCase
         $this->assertSame('/de/docs/anleitung', Entry::find($entry->id())->url());
         $this->assertSame('/en/docs/guide', Translations::in('en', fn () => Entry::find($entry->id())->url()));
         $this->get('/en/docs/guide')->assertOk()->assertSee('title=Guide|slug=guide|subtitle=|headline=Go', false);
+    }
+
+    public function test_static_warm_gets_the_other_languages_urls(): void
+    {
+        $entry = $this->news();
+        $draft = Entry::make()->collection('news')->slug('entwurf')->published(false)->data(['title' => 'Entwurf', 'slug_translation' => ['en' => 'draft']]);
+        $draft->save();
+
+        $this->assertSame(['http://localhost/en/news/news-item'], TranslatedUris::urls());
+
+        $hooks = app('statamic.hooks')[StaticWarm::class]['additional'] ?? collect();
+        $this->assertCount(1, $hooks);
+        $uris = (new Pipeline)->send(collect(['http://localhost/de/news/nachricht']))->through($hooks->all())->thenReturn();
+        $this->assertSame(['http://localhost/de/news/nachricht', 'http://localhost/en/news/news-item'], $uris->all());
     }
 }
